@@ -158,7 +158,7 @@ public class PeliculasDAOImpl extends GenericDAOImpl<Peliculas> implements Pelic
 	@Override
 	public List<Peliculas> selectAll(Dictionary<String,String> conditions){
 		List<Peliculas> filmList = new ArrayList<>();
-		String sql = "SELECT distinct on (p.*) * from peliculas as p ";
+		String sql = "SELECT * from peliculas as p ";
 		String cond = "WHERE ";
 		String order = " ORDER BY ";
 		boolean add_order = false;
@@ -202,6 +202,7 @@ public class PeliculasDAOImpl extends GenericDAOImpl<Peliculas> implements Pelic
 						cond+= "calificacion::INTEGER = 1";
 					if(conditions.get("adultos").equals("no"))
 						cond+= "calificacion::INTEGER = 0";
+					break;
 				case "titulo":
 					if(conditions.get("idioma") == null) {
 						cond+= "p.titulo like "+"$$"+conditions.get("titulo")+"%$$";
@@ -221,16 +222,16 @@ public class PeliculasDAOImpl extends GenericDAOImpl<Peliculas> implements Pelic
 				case "genero":
 					String diccionario =conditions.get("genero");
 					if(conditions.get("genero").indexOf("%") == -1) {
-						cond+= "pg.genero= "+"'"+diccionario+"'";
+						cond+= "pgg.genero= "+"'"+diccionario+"'";
 					} else {
 						String[] generos = diccionario.split("%");
-						cond+= "(pg.genero= "+"'"+generos[0]+"'";
+						cond+= "(pgg.genero= "+"'"+generos[0]+"'";
 						for(int i=1; i< generos.length;i++) {
-							cond += " OR " + "pg.genero='" + generos[i] + "'";
+							cond += " OR " + "pgg.genero='" + generos[i] + "'";
 						}
 						cond+=")";
 					}
-					sql+="Inner join peliculasgeneros as pg on p.idpelicula=pg.id_pelicula ";
+					sql+="Inner join peliculasgeneros as pgg on p.idpelicula=pgg.id_pelicula ";
 					break;
 				case "order":
 					order += add_order?" ,":"";
